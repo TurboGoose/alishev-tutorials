@@ -38,6 +38,26 @@ public class PeopleController {
     @PostMapping
     public String createNewPerson(@ModelAttribute Person person) {
         dao.save(person);
+        return "redirect:/people/" + person.getId();
+    }
+
+    @GetMapping("/{id}/edit")
+    public String getEditPersonForm(@PathVariable int id, Model model) {
+        Person person = dao.getPersonById(id).orElseThrow(
+                () -> new IllegalArgumentException(String.format("Person with id %d does no exist", id)));
+        model.addAttribute("person", person);
+        return "people/edit";
+    }
+
+    @PatchMapping("/{id}")
+    public String editPerson(@PathVariable int id, @ModelAttribute Person person) {
+        dao.update(id, person);
+        return "redirect:/people/" + id;
+    }
+
+    @DeleteMapping("/{id}")
+    public String deletePerson(@PathVariable int id) {
+        dao.delete(id);
         return "redirect:/people";
     }
 }

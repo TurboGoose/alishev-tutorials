@@ -37,4 +37,19 @@ public class PersonDao {
         person.setId(generateId());
         people.add(person);
     }
+
+    public void update(int id, Person updatedPerson) {
+        Optional<Person> optionalPersonToBeUpdated = people.stream()
+                .filter(p -> p.getId() == id)
+                .findFirst();
+        if (optionalPersonToBeUpdated.isEmpty()) {
+            return;
+        }
+        Person personToBeUpdated = optionalPersonToBeUpdated.get();
+        personToBeUpdated.setName(updatedPerson.getName());
+    }
+
+    public void delete(int id) {
+        people.removeIf(p -> p.getId() == id);
+    }
 }
