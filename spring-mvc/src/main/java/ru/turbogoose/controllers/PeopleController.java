@@ -2,9 +2,7 @@ package ru.turbogoose.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.turbogoose.dao.PersonDao;
 import ru.turbogoose.models.Person;
 
@@ -30,5 +28,16 @@ public class PeopleController {
         );
         model.addAttribute("person", person);
         return "people/show";
+    }
+
+    @GetMapping("/new")
+    public String getCreateNewPersonForm(@ModelAttribute Person person) {
+        return "people/new";
+    }
+
+    @PostMapping
+    public String createNewPerson(@ModelAttribute Person person) {
+        dao.save(person);
+        return "redirect:/people";
     }
 }

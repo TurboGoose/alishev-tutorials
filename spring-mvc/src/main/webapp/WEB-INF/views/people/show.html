@@ -5,7 +5,10 @@
     <title>Person</title>
 </head>
 <body>
-  <p th:text="'Name: ' + ${person.getName()}"></p>
-  <p th:text="'Id: ' + ${person.getId()}"></p>
+<p th:text="'Name: ' + ${person.getName()}"></p>
+<p th:text="'Id: ' + ${person.getId()}"></p>
+<br>
+<a th:href="@{/people}">Back to people list</a>
+
 </body>
 </html>
