@@ -2,9 +2,12 @@ package ru.turbogoose.controllers;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.turbogoose.dao.PersonDao;
 import ru.turbogoose.models.Person;
+
+import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/people")
@@ -36,7 +39,10 @@ public class PeopleController {
     }
 
     @PostMapping
-    public String createNewPerson(@ModelAttribute Person person) {
+    public String createNewPerson(@ModelAttribute @Valid Person person, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "people/new";
+        }
         dao.save(person);
         return "redirect:/people/" + person.getId();
     }
@@ -50,7 +56,10 @@ public class PeopleController {
     }
 
     @PatchMapping("/{id}")
-    public String editPerson(@PathVariable int id, @ModelAttribute Person person) {
+    public String editPerson(@PathVariable int id, @ModelAttribute @Valid Person person, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "people/edit";
+        }
         dao.update(id, person);
         return "redirect:/people/" + id;
     }
