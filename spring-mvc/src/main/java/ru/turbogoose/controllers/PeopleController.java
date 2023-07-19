@@ -43,8 +43,8 @@ public class PeopleController {
         if (bindingResult.hasErrors()) {
             return "people/new";
         }
-        dao.save(person);
-        return "redirect:/people/" + person.getId();
+        int generatedId = dao.save(person);
+        return "redirect:/people/" + generatedId;
     }
 
     @GetMapping("/{id}/edit")
