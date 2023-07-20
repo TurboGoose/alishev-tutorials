@@ -25,6 +25,12 @@ public class Person {
         this.name = name;
     }
 
+    public Person(int age, String email, String name) {
+        this.age = age;
+        this.email = email;
+        this.name = name;
+    }
+
     public int getId() {
         return id;
     }
