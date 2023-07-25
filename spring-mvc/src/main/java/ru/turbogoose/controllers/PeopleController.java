@@ -6,6 +6,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.turbogoose.dao.PersonDao;
 import ru.turbogoose.models.Person;
+import ru.turbogoose.util.PersonValidator;
 
 import javax.validation.Valid;
 
@@ -13,9 +14,11 @@ import javax.validation.Valid;
 @RequestMapping("/people")
 public class PeopleController {
     private final PersonDao dao;
+    private final PersonValidator personValidator;
 
-    public PeopleController(PersonDao dao) {
+    public PeopleController(PersonDao dao, PersonValidator personValidator) {
         this.dao = dao;
+        this.personValidator = personValidator;
     }
 
     @GetMapping
@@ -40,6 +43,8 @@ public class PeopleController {
 
     @PostMapping
     public String createNewPerson(@ModelAttribute @Valid Person person, BindingResult bindingResult) {
+        personValidator.validate(person, bindingResult);
+
         if (bindingResult.hasErrors()) {
             return "people/new";
         }
@@ -57,6 +62,8 @@ public class PeopleController {
 
     @PatchMapping("/{id}")
     public String editPerson(@PathVariable int id, @ModelAttribute @Valid Person person, BindingResult bindingResult) {
+        personValidator.validate(person, bindingResult);
+
         if (bindingResult.hasErrors()) {
             return "people/edit";
         }

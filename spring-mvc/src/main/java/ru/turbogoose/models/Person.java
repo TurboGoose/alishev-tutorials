@@ -1,9 +1,6 @@
 package ru.turbogoose.models;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 public class Person {
     private int id;
@@ -14,21 +11,25 @@ public class Person {
     @NotEmpty
     @Size(min = 2, max = 30, message = "Name length must be in between 2 and 30 characters")
     private String name;
+    @Pattern(regexp = "[A-Z]\\w+, [A-Z]\\w+, \\d{6}$", message = "Address must be in format: Country, City, zip (6 digits)")
+    private String address;
 
     public Person() {
     }
 
-    public Person(int id, int age, String email, String name) {
+    public Person(int id, int age, String email, String name, String address) {
         this.id = id;
         this.age = age;
         this.email = email;
         this.name = name;
+        this.address = address;
     }
 
-    public Person(int age, String email, String name) {
+    public Person(int age, String email, String name, String address) {
         this.age = age;
         this.email = email;
         this.name = name;
+        this.address = address;
     }
 
     public int getId() {
@@ -61,6 +62,14 @@ public class Person {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     @Override

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import ru.turbogoose.models.Person;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,14 +32,20 @@ public class PersonDao {
                 .stream().findFirst();
     }
 
+    public Optional<Person> getPersonByEmail(String email) {
+        return jdbcTemplate.query("SELECT * FROM person WHERE email=?", new BeanPropertyRowMapper<>(Person.class), email)
+                .stream().findFirst();
+    }
+
     public int save(Person person) {
-        final String SQL = "INSERT INTO person(name, age, email) VALUES(?, ?, ?)";
+        final String SQL = "INSERT INTO person(name, age, email, address) VALUES(?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(conn -> {
             PreparedStatement ps = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, person.getName());
             ps.setInt(2, person.getAge());
             ps.setString(3, person.getEmail());
+            ps.setString(4, person.getAddress());
             return ps;
         }, keyHolder);
 
@@ -58,8 +63,8 @@ public class PersonDao {
     }
 
     public void update(int id, Person updated) {
-        jdbcTemplate.update("UPDATE person SET name=?, age=?, email=? WHERE id=?",
-                updated.getName(), updated.getAge(), updated.getEmail(), id);
+        jdbcTemplate.update("UPDATE person SET name=?, age=?, email=?, address=? WHERE id=?",
+                updated.getName(), updated.getAge(), updated.getEmail(), updated.getAddress(), id);
     }
 
     public void delete(int id) {
@@ -78,7 +83,7 @@ public class PersonDao {
 
         long start = System.currentTimeMillis();
 
-        jdbcTemplate.batchUpdate("INSERT INTO person(name, age, email) VALUES(?, ?, ?)",
+        jdbcTemplate.batchUpdate("INSERT INTO person(name, age, email, address) VALUES(?, ?, ?, ?)",
                 batchPreparedStatementSetter);
 
         long end = System.currentTimeMillis();
@@ -91,8 +96,8 @@ public class PersonDao {
         long start = System.currentTimeMillis();
 
         for (Person person : people) {
-            jdbcTemplate.update("INSERT INTO person(name, age, email) VALUES(?, ?, ?)",
-                    person.getName(), person.getAge(), person.getEmail());
+            jdbcTemplate.update("INSERT INTO person(name, age, email, address) VALUES(?, ?, ?, ?)",
+                    person.getName(), person.getAge(), person.getEmail(), person.getAddress());
         }
 
         long end = System.currentTimeMillis();
@@ -102,29 +107,9 @@ public class PersonDao {
     private List<Person> generateXPeople() {
         List<Person> people = new ArrayList<>(PEOPLE_COUNT);
         for (int i = 0; i < PEOPLE_COUNT; i++) {
-            people.add(new Person(20, "person" + i + "@mail.com", "Person " + i));
+            people.add(new Person(20, "person" + i + "@mail.com", "Person " + i, "Kolotushkina 5"));
         }
         return people;
     }
 }
 
-class PeopleBatchPreparedStatementSetter implements BatchPreparedStatementSetter {
-    private final List<Person> people;
-
-    public PeopleBatchPreparedStatementSetter(List<Person> people) {
-        this.people = people;
-    }
-
-    @Override
-    public void setValues(PreparedStatement ps, int i) throws SQLException {
-        Person person = people.get(i);
-        ps.setString(1, person.getName());
-        ps.setInt(2, person.getAge());
-        ps.setString(3, person.getEmail());
-    }
-
-    @Override
-    public int getBatchSize() {
-        return people.size();
-    }
-}
