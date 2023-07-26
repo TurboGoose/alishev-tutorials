@@ -51,4 +51,10 @@ public class PeopleController {
         model.addAttribute("person", optionalPerson.get());
         return "people/show";
     }
+
+    @DeleteMapping("/{id}")
+    public String deletePersonById(@PathVariable int id) {
+        dao.deleteById(id);
+        return "redirect:/people";
+    }
 }

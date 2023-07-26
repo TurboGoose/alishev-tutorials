@@ -53,4 +53,8 @@ public class PersonDao {
         return jdbcTemplate.query("SELECT * FROM Person WHERE id=?", new BeanPropertyRowMapper<>(Person.class), id)
                 .stream().findFirst();
     }
+
+    public void deleteById(int id) {
+        jdbcTemplate.update("DELETE FROM Person WHERE id=?", id);
+    }
 }
