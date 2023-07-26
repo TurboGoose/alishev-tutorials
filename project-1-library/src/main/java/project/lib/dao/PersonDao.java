@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class PersonDao {
@@ -35,7 +36,7 @@ public class PersonDao {
             return ps;
         }, keyHolder);
 
-        int generatedId = extractGeneratedId(keyHolder, "person_id");
+        int generatedId = extractGeneratedId(keyHolder, "id");
         person.setId(generatedId);
         return generatedId;
     }
@@ -46,5 +47,10 @@ public class PersonDao {
             throw new RuntimeException("Id was not generated");
         }
         return (int) generatedKeys.get(idFieldName);
+    }
+
+    public Optional<Person> getPersonById(int id) {
+        return jdbcTemplate.query("SELECT * FROM Person WHERE id=?", new BeanPropertyRowMapper<>(Person.class), id)
+                .stream().findFirst();
     }
 }

@@ -3,22 +3,20 @@ package project.lib.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import project.lib.dao.PersonDao;
 import project.lib.model.Person;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/people")
-public class UsersController {
+public class PeopleController {
     private final PersonDao dao;
 
-    public UsersController(PersonDao dao) {
+    public PeopleController(PersonDao dao) {
         this.dao = dao;
     }
 
@@ -42,5 +40,15 @@ public class UsersController {
         }
         int id = dao.save(person);
         return "redirect:/people/" + id;
+    }
+
+    @GetMapping("/{id}")
+    public String getPersonById(@PathVariable int id, Model model) {
+        Optional<Person> optionalPerson = dao.getPersonById(id);
+        if (optionalPerson.isEmpty()) {
+            return "redirect:/people";
+        }
+        model.addAttribute("person", optionalPerson.get());
+        return "people/show";
     }
 }
