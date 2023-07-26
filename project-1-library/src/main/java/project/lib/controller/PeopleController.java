@@ -43,7 +43,7 @@ public class PeopleController {
     }
 
     @GetMapping("/{id}")
-    public String getPersonById(@PathVariable int id, Model model) {
+    public String getPerson(@PathVariable int id, Model model) {
         Optional<Person> optionalPerson = dao.getPersonById(id);
         if (optionalPerson.isEmpty()) {
             return "redirect:/people";
@@ -53,8 +53,28 @@ public class PeopleController {
     }
 
     @DeleteMapping("/{id}")
-    public String deletePersonById(@PathVariable int id) {
+    public String deletePerson(@PathVariable int id) {
         dao.deleteById(id);
         return "redirect:/people";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String getPersonEditForm(@PathVariable int id, Model model) {
+        Optional<Person> optionalPerson = dao.getPersonById(id);
+        if (optionalPerson.isEmpty()) {
+            return "redirect:/people";
+        }
+        model.addAttribute("person", optionalPerson.get());
+        return "people/edit";
+    }
+
+    @PutMapping("/{id}")
+    public String editPerson(@PathVariable int id,
+                             @Valid @ModelAttribute Person person, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "people/edit";
+        }
+        dao.updatePerson(id, person);
+        return "redirect:/people/" + id;
     }
 }
