@@ -9,6 +9,15 @@
 <p th:text="'Year of birth: ' + ${person.getYearOfBirth()}"></p>
 
 <hr>
+<p th:if="${books.isEmpty()}"><b>No books borrowed yet</b></p>
+<div th:if="${!books.isEmpty()}">
+    <p><b>Borrowed books:</b></p>
+    <ul>
+       <li th:each="book : ${books}"  th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getYearOfPublication()}"></li>
+    </ul>
+</div>
+
+<hr>
 <form th:method="GET" th:action="@{/people/{id}/edit(id=${person.getId()})}">
     <input type="submit" value="Edit">
 </form>
