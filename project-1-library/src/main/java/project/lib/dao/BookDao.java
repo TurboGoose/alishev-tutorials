@@ -59,4 +59,8 @@ public class BookDao {
         return jdbcTemplate.query("SELECT * FROM Book WHERE id=?", new BeanPropertyRowMapper<>(Book.class), id)
                 .stream().findFirst();
     }
+
+    public void delete(int id) {
+        jdbcTemplate.update("DELETE FROM Book WHERE id=?", id);
+    }
 }

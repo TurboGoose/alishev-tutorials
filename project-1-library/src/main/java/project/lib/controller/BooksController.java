@@ -53,4 +53,10 @@ public class BooksController {
         model.addAttribute("person", personDao.getBorrowerByBookId(id).orElse(null));
         return "books/show";
     }
+
+    @DeleteMapping("/{id}")
+    public String deleteBook(@PathVariable int id) {
+        bookDao.delete(id);
+        return "redirect:/books";
+    }
 }
