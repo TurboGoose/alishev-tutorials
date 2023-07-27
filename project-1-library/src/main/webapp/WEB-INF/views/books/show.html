@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book</title>
+</head>
+<body>
+<p th:text="'Title: ' + ${book.getTitle()}"></p>
+<p th:text="'Author: ' + ${book.getAuthor()}"></p>
+<p th:text="'Year of publication: ' + ${book.getYearOfPublication()}"></p>
+
+<hr>
+<p th:if="${person == null}">This book is free now</p>
+<p th:if="${person != null}"
+   th:text="'This book is borrowed by: ' + ${person.getFullName() + ', ' + person.getYearOfBirth()}"></p>
+
+<hr>
+<form th:method="GET" th:action="@{/books/{id}/edit(id=${book.getId()})}">
+    <input type="submit" value="Edit">
+</form>
+
+<form th:method="DELETE" th:action="@{/books/{id}(id=${book.getId()})}">
+    <input type="submit" value="Delete">
+</form>
+
+<br>
+<a th:href="@{/books}">Back to books list</a>
+</body>
+</html>

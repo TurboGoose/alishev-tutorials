@@ -62,4 +62,10 @@ public class PersonDao {
         jdbcTemplate.update("UPDATE Person SET full_name=?, year_of_birth=? WHERE id=?",
                 person.getFullName(), person.getYearOfBirth(), id);
     }
+
+    public Optional<Person> getBorrowerByBookId(int bookId) {
+        final String SQL = "SELECT * FROM Person p JOIN Book b on p.id = b.person_id WHERE b.id=?";
+        return jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(Person.class), bookId)
+                .stream().findFirst();
+    }
 }

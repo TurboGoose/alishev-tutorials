@@ -6,12 +6,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import project.lib.model.Book;
-import project.lib.model.Person;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class BookDao {
@@ -53,5 +53,10 @@ public class BookDao {
             throw new RuntimeException("Id was not generated");
         }
         return (int) generatedKeys.get(idFieldName);
+    }
+
+    public Optional<Book> getBookById(int id) {
+        return jdbcTemplate.query("SELECT * FROM Book WHERE id=?", new BeanPropertyRowMapper<>(Book.class), id)
+                .stream().findFirst();
     }
 }
