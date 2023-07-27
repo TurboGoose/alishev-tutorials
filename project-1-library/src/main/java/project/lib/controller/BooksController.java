@@ -59,4 +59,24 @@ public class BooksController {
         bookDao.delete(id);
         return "redirect:/books";
     }
+
+    @GetMapping("/{id}/edit")
+    public String getEditBookForm(@PathVariable int id, Model model) {
+        Optional<Book> optionalBook = bookDao.getBookById(id);
+        if (optionalBook.isEmpty()) {
+            return "redirect:/books";
+        }
+        model.addAttribute("book", optionalBook.get());
+        return "books/edit";
+    }
+
+    @PutMapping("/{id}")
+    public String editBook(@PathVariable int id,
+                           @Valid @ModelAttribute Book book, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "books/edit";
+        }
+        bookDao.update(id, book);
+        return "redirect:/books/" + id;
+    }
 }
