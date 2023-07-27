@@ -15,6 +15,10 @@ public class BookDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public List<Book> getAllBooks() {
+        return jdbcTemplate.query("SELECT * FROM Book", new BeanPropertyRowMapper<>(Book.class));
+    }
+
     public List<Book> getBooksByPersonId(int personId) {
         final String SQL = "SELECT * FROM Book b join Person p on b.person_id = p.id WHERE person_id=?";
         return jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(Book.class), personId);
