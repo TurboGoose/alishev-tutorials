@@ -8,6 +8,7 @@ import project.lib.dao.BookDao;
 import project.lib.dao.PersonDao;
 import project.lib.model.Book;
 import project.lib.model.Person;
+import project.lib.util.PersonValidator;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -19,9 +20,12 @@ public class PeopleController {
     private final PersonDao personDao;
     private final BookDao bookDao;
 
-    public PeopleController(PersonDao personDao, BookDao bookDao) {
+    private final PersonValidator personValidator;
+
+    public PeopleController(PersonDao personDao, BookDao bookDao, PersonValidator personValidator) {
         this.personDao = personDao;
         this.bookDao = bookDao;
+        this.personValidator = personValidator;
     }
 
     @GetMapping
@@ -39,6 +43,7 @@ public class PeopleController {
 
     @PostMapping
     public String createPerson(@Valid @ModelAttribute Person person, BindingResult bindingResult) {
+        personValidator.validate(person, bindingResult);
         if (bindingResult.hasErrors()) {
             return "people/create";
         }
@@ -77,6 +82,7 @@ public class PeopleController {
     @PutMapping("/{id}")
     public String editPerson(@PathVariable int id,
                              @Valid @ModelAttribute Person person, BindingResult bindingResult) {
+        personValidator.validate(person, bindingResult);
         if (bindingResult.hasErrors()) {
             return "people/edit";
         }

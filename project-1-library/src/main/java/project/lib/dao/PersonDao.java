@@ -22,15 +22,18 @@ public class PersonDao {
     }
 
     public List<Person> getAllPeople() {
-        return jdbcTemplate.query("SELECT * FROM Person", new BeanPropertyRowMapper<>(Person.class));
+        return jdbcTemplate.query(
+                "SELECT * FROM Person",
+                new BeanPropertyRowMapper<>(Person.class));
     }
 
     public int save(Person person) {
-        final String SQL = "INSERT INTO Person(full_name, year_of_birth) VALUES(?, ?)";
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(conn -> {
-            PreparedStatement ps = conn.prepareStatement(SQL, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement ps = conn.prepareStatement(
+                    "INSERT INTO Person(full_name, year_of_birth) VALUES(?, ?)",
+                    Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, person.getFullName());
             ps.setInt(2, person.getYearOfBirth());
             return ps;
@@ -50,22 +53,38 @@ public class PersonDao {
     }
 
     public Optional<Person> getPersonById(int id) {
-        return jdbcTemplate.query("SELECT * FROM Person WHERE id=?", new BeanPropertyRowMapper<>(Person.class), id)
+        return jdbcTemplate.query(
+                        "SELECT * FROM Person WHERE id=?",
+                        new BeanPropertyRowMapper<>(Person.class),
+                        id)
                 .stream().findFirst();
     }
 
     public void deleteById(int id) {
-        jdbcTemplate.update("DELETE FROM Person WHERE id=?", id);
+        jdbcTemplate.update(
+                "DELETE FROM Person WHERE id=?",
+                id);
     }
 
     public void updatePerson(int id, Person person) {
-        jdbcTemplate.update("UPDATE Person SET full_name=?, year_of_birth=? WHERE id=?",
+        jdbcTemplate.update(
+                "UPDATE Person SET full_name=?, year_of_birth=? WHERE id=?",
                 person.getFullName(), person.getYearOfBirth(), id);
     }
 
     public Optional<Person> getBorrowerByBookId(int bookId) {
-        final String SQL = "SELECT * FROM Person p JOIN Book b on p.id = b.person_id WHERE b.id=?";
-        return jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(Person.class), bookId)
+        return jdbcTemplate.query(
+                        "SELECT * FROM Person p JOIN Book b on p.id = b.person_id WHERE b.id=?",
+                        new BeanPropertyRowMapper<>(Person.class),
+                        bookId)
+                .stream().findFirst();
+    }
+
+    public Optional<Person> getPersonByFullName(String fullName) {
+        return jdbcTemplate.query(
+                        "SELECT * FROM Person WHERE full_name=?",
+                        new BeanPropertyRowMapper<>(Person.class),
+                        fullName)
                 .stream().findFirst();
     }
 }
