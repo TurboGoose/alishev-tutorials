@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import project.lib.dao.BookDao;
 import project.lib.dao.PersonDao;
 import project.lib.model.Book;
+import project.lib.model.Person;
 
 import javax.validation.Valid;
 import java.util.Optional;
@@ -45,12 +46,19 @@ public class BooksController {
 
     @GetMapping("/{id}")
     public String getBook(@PathVariable int id, Model model) {
-        Optional<Book> bookOptional = bookDao.getBookById(id);
-        if (bookOptional.isEmpty()) {
+        Optional<Book> optionalBook = bookDao.getBookById(id);
+        if (optionalBook.isEmpty()) {
             return "redirect:/books";
         }
-        model.addAttribute("book", bookOptional.get());
-        model.addAttribute("person", personDao.getBorrowerByBookId(id).orElse(null));
+        model.addAttribute("book", optionalBook.get());
+        Optional<Person> optionalPerson = personDao.getBorrowerByBookId(id);
+        boolean isBookFree = optionalPerson.isEmpty();
+        model.addAttribute("isBookFree", isBookFree);
+        if (isBookFree) {
+            model.addAttribute("people", personDao.getAllPeople());
+        } else {
+            model.addAttribute("person", optionalPerson.get());
+        }
         return "books/show";
     }
 
@@ -78,5 +86,15 @@ public class BooksController {
         }
         bookDao.update(id, book);
         return "redirect:/books/" + id;
+    }
+
+    @PatchMapping("/{id}")
+    public String setBorrower(@PathVariable int id, @RequestParam int borrowerId) {
+        if (borrowerId == -1) {
+            bookDao.release(id);
+        } else {
+            bookDao.assign(id, borrowerId);
+        }
+        return "redirect:/books/{id}";
     }
 }

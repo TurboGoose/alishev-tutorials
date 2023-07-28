@@ -8,13 +8,27 @@
 <p th:text="'Title: ' + ${book.getTitle()}"></p>
 <p th:text="'Author: ' + ${book.getAuthor()}"></p>
 <p th:text="'Year of publication: ' + ${book.getYearOfPublication()}"></p>
-
 <hr>
-<p th:if="${person == null}">This book is free now</p>
-<p th:if="${person != null}"
-   th:text="'This book is borrowed by: ' + ${person.getFullName() + ', ' + person.getYearOfBirth()}"></p>
 
+<form th:if="${isBookFree}" th:method="PATCH" th:action="@{/books/{id}(id=${book.getId()})}">
+    <p>This book is free for now</p>
+    <label for="borId">Choose borrower: </label>
+    <select id="borId" name="borrowerId">
+        <option selected disabled hidden>-- choose --</option>
+        <option th:each="person : ${people}"
+                th:text="${person.getFullName() + ', ' + person.getYearOfBirth()}"
+                th:value="${person.getId()}"></option>
+    </select>
+    <input type="submit" value="borrow">
+</form>
+
+<form th:unless="${isBookFree}" th:method="PATCH" th:action="@{/books/{id}(id=${book.getId()})}">
+    <p th:text="'This book is borrowed now by: ' + ${person.getFullName() + ', ' + person.getYearOfBirth()}"></p>
+    <input hidden name="borrowerId" value="-1"> <!-- Acts as null value for borrower -->
+    <input type="submit" value="return">
+</form>
 <hr>
+
 <form th:method="GET" th:action="@{/books/{id}/edit(id=${book.getId()})}">
     <input type="submit" value="Edit">
 </form>
