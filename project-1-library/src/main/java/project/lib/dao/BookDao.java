@@ -26,7 +26,7 @@ public class BookDao {
     }
 
     public List<Book> getBooksByPersonId(int personId) {
-        final String SQL = "SELECT * FROM Book b join Person p on b.person_id = p.id WHERE person_id=?";
+        final String SQL = "SELECT * FROM Book WHERE person_id=?";
         return jdbcTemplate.query(SQL, new BeanPropertyRowMapper<>(Book.class), personId);
     }
 
@@ -70,11 +70,11 @@ public class BookDao {
     }
 
 
-    public void release(int bookId) {
+    public void turnIn(int bookId) {
         jdbcTemplate.update("UPDATE Book SET person_id=null WHERE id=?", bookId);
     }
 
-    public void assign(int bookId, int personId) {
+    public void borrow(int bookId, int personId) {
         jdbcTemplate.update("UPDATE Book SET person_id=? WHERE id=?", personId, bookId);
     }
 }

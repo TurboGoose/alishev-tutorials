@@ -1,5 +1,6 @@
 package project.lib.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -10,7 +11,6 @@ import project.lib.model.Book;
 import project.lib.model.Person;
 import project.lib.util.PersonValidator;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 

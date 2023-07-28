@@ -1,5 +1,6 @@
 package project.lib.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,7 +10,6 @@ import project.lib.dao.PersonDao;
 import project.lib.model.Book;
 import project.lib.model.Person;
 
-import javax.validation.Valid;
 import java.util.Optional;
 
 @Controller
@@ -52,9 +52,9 @@ public class BooksController {
         }
         model.addAttribute("book", optionalBook.get());
         Optional<Person> optionalPerson = personDao.getBorrowerByBookId(id);
-        boolean isBookFree = optionalPerson.isEmpty();
-        model.addAttribute("isBookFree", isBookFree);
-        if (isBookFree) {
+        boolean isBookAvailable = optionalPerson.isEmpty();
+        model.addAttribute("isBookAvailable", isBookAvailable);
+        if (isBookAvailable) {
             model.addAttribute("people", personDao.getAllPeople());
         } else {
             model.addAttribute("person", optionalPerson.get());
@@ -89,11 +89,11 @@ public class BooksController {
     }
 
     @PatchMapping("/{id}")
-    public String setBorrower(@PathVariable int id, @RequestParam int borrowerId) {
+    public String setBorrower(@PathVariable("id") int bookId, @RequestParam int borrowerId) {
         if (borrowerId == -1) {
-            bookDao.release(id);
+            bookDao.turnIn(bookId);
         } else {
-            bookDao.assign(id, borrowerId);
+            bookDao.borrow(bookId, borrowerId);
         }
         return "redirect:/books/{id}";
     }
