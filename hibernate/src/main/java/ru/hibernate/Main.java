@@ -4,6 +4,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import ru.hibernate.model.Person;
+import ru.hibernate.util.PersonFactory;
 
 class Main {
     public static void main(String[] args) {
@@ -13,10 +14,13 @@ class Main {
             Session session = sessionFactory.getCurrentSession();
 
             session.beginTransaction();
-            Person person = session.get(Person.class, 1);
-            session.getTransaction().commit();
 
-            System.out.println(person);
+            for (int i = 0; i < 5; i++) {
+                int id = (int) session.save(PersonFactory.get());
+                System.out.println("Generated id: " + id);
+            }
+
+            session.getTransaction().commit();
         }
     }
 }
