@@ -7,10 +7,7 @@ import lombok.Data;
 @Entity
 public class Person {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "person_id_seq_generator")
-    @SequenceGenerator(name = "person_id_seq_generator",
-            sequenceName = "person_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
     private int age;
