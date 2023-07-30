@@ -16,8 +16,9 @@ class Main {
             Person person = PersonFactory.get();
 
             // create
-            int id = (int) session.save(person);
-            System.out.println(id == person.getId());
+            session.persist(person);
+            int id = person.getId();
+            System.out.println("Generated id: " + id);
 
             // read
             person = session.get(Person.class, id);
@@ -28,7 +29,7 @@ class Main {
             System.out.println("After update");
 
             // delete
-//            session.delete(person);
+//            session.remove(person);
 
             session.getTransaction().commit();
             System.out.println("After transaction");
