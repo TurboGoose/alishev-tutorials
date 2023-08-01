@@ -1,6 +1,6 @@
-package ru.hibernate.util;
+package ru.hibernate.items.util;
 
-import ru.hibernate.model.Person;
+import ru.hibernate.items.model.Person;
 
 import java.util.Random;
 

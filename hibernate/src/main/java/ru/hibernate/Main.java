@@ -3,110 +3,91 @@ package ru.hibernate;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import ru.hibernate.model.Item;
-import ru.hibernate.model.Person;
-import ru.hibernate.util.ItemFactory;
-import ru.hibernate.util.PersonFactory;
+import ru.hibernate.movies.model.Director;
+import ru.hibernate.movies.model.Movie;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 class Main {
     public static void main(String[] args) {
         Configuration config = new Configuration()
-                .addAnnotatedClass(Person.class)
-                .addAnnotatedClass(Item.class);
+                .addAnnotatedClass(Director.class)
+                .addAnnotatedClass(Movie.class);
 
         try (SessionFactory sessionFactory = config.buildSessionFactory()) {
             Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
 
-//            getItemsByOwner(session);
-//            getOwnerByItem(session);
-//            addItemForPerson(session);
-//            addPersonAndItem(session);
-//            deleteItemsOfPerson(session);
-//            deletePerson(session);
-            changeOwnerForItem(session);
+//            getDirectorAndAllHisMovies(session);
+//            getMovieAndItsDirector(session);
+//            addMovieForDirector(session);
+//            addNewDirectorWithMovie(session);
+//            changeDirectorForMovie(session);
+            deleteFilmFromDirector(session);
 
             session.getTransaction().commit();
         }
     }
 
-    private static void changeOwnerForItem(Session session) {
-        Item item = session.get(Item.class, 1); // select
-        Person oldOwner = item.getOwner(); // not cached
-        Person newOwner = session.get(Person.class, 3); // select -> cached?
-
-        item.setOwner(newOwner); // update
-        oldOwner.getItems().remove(item); // not cached -> select
-        newOwner.getItems().add(item); // cached -> no select
+    private static void getDirectorAndAllHisMovies(Session session) {
+        Director director = session.get(Director.class, 1); // select
+        director.getMovies().forEach(System.out::println); // select
     }
 
-    private static void deletePerson(Session session) {
-        Person person = session.get(Person.class, 1);
-
-        System.out.println("Before removal");
-        session.remove(person);
-        System.out.println("After removal");
-
-//        System.out.println("All owners are nulls: " + areOwnersNulls(person));
-
-        person.getItems().forEach(p -> p.setOwner(null));
-        System.out.println("All owners are nulls: " + areOwnersNulls(person));
+    private static void getMovieAndItsDirector(Session session) {
+        Movie movie = session.get(Movie.class, 7); // select
+        System.out.println(movie);
+        System.out.println(movie.getDirector());
     }
 
-    private static boolean areOwnersNulls(Person person) {
-        return person.getItems().stream()
-                .map(Item::getOwner)
-                .allMatch(Objects::isNull);
+    private static void addMovieForDirector(Session session) {
+        Director director = session.get(Director.class, 3); // select
+        Movie newMovie = new Movie();
+        newMovie.setName("Brand new movie");
+        newMovie.setYearOfProduction(2023);
+        newMovie.setDirector(director);
+
+        session.persist(newMovie); // insert (in the end of transaction)
+        director.getMovies().add(newMovie);
     }
 
+    private static void addNewDirectorWithMovie(Session session) {
+        Director director = new Director();
+        director.setName("Some name");
+        director.setAge(45);
 
-    private static void deleteItemsOfPerson(Session session) {
-        Person person = session.get(Person.class, 1);
-        for (Item item : person.getItems()) {
-            session.remove(item);
-        }
-        person.getItems().clear();
-        System.out.println(person.getItems());
+        Movie movie = new Movie();
+        movie.setName("Some movie");
+        movie.setYearOfProduction(2023);
+        movie.setDirector(director);
+
+        director.setMovies(new ArrayList<>(List.of(movie)));
+
+        session.persist(director); // insert
+        session.persist(movie); // insert
+
+        System.out.println(director);
+        System.out.println(movie);
     }
 
-    private static void getItemsByOwner(Session session) {
-        Person person = session.get(Person.class, 1);
-        System.out.println(person);
+    private static void changeDirectorForMovie(Session session) {
+        Movie movie = session.get(Movie.class, 14); // select
+        Director oldDirector = movie.getDirector();
+        Director newDirector = session.get(Director.class, 1); // select
 
-        System.out.println(person.getItems());
+        movie.setDirector(newDirector); // update
+        oldDirector.getMovies().remove(movie); // select
+        newDirector.getMovies().add(movie); // why no select?
+
+        System.out.println(newDirector.getMovies()); // select
     }
 
-    private static void getOwnerByItem(Session session) {
-        Item item = session.get(Item.class, 1);
-        System.out.println(item);
+    private static void deleteFilmFromDirector(Session session) {
+        Movie movie = session.get(Movie.class, 14); // select
+        Director director = movie.getDirector();
 
-        System.out.println(item.getOwner());
-    }
-
-    private static void addItemForPerson(Session session) {
-        Person person = session.get(Person.class, 3);
-        System.out.println(person);
-
-        Item item = ItemFactory.getItem(person);
-
-        session.persist(item);
-        System.out.println(item + "; " + item.getOwner());
-        System.out.println(person.getItems());
-    }
-
-    private static void addPersonAndItem(Session session) {
-        Person person = PersonFactory.get();
-        Item item = ItemFactory.getItem(person);
-        person.setItems(new ArrayList<>(List.of(item)));
-
-        session.persist(person);
-        session.persist(item);
-
-        System.out.println(person);
-        System.out.println(item);
+        session.remove(movie); // delete
+        director.getMovies().remove(movie); // select
     }
 }
