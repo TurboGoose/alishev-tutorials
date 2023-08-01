@@ -1,4 +1,4 @@
-package ru.hibernate;
+package ru.hibernate.items;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;

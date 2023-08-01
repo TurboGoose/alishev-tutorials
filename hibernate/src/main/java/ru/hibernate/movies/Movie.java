@@ -1,4 +1,4 @@
-package ru.hibernate.movies.model;
+package ru.hibernate.movies;
 
 import jakarta.persistence.*;
 import lombok.Data;
