@@ -14,12 +14,25 @@ class Main {
                 .addAnnotatedClass(Movie.class);
 
         try (SessionFactory sessionFactory = config.buildSessionFactory()) {
+            // first session
             Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
 
-//            createAndSaveActorsAndMovies(session);
-//            addMovieToActor(session);
-            unlinkActorFromMovie(session);
+            Actor actor = session.get(Actor.class, 4);
+            System.out.println("Entity loaded");
+
+            session.getTransaction().commit();
+
+            session.close();
+            System.out.println("Session closed");
+
+            // second session
+            session = sessionFactory.getCurrentSession();
+            System.out.println("Second session started");
+            session.beginTransaction();
+
+            actor = session.merge(actor);
+            System.out.println(actor.getMovies());
 
             session.getTransaction().commit();
         }
