@@ -2,19 +2,26 @@ package ru.hibernate.movies;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.util.List;
 
 @Data
+@NoArgsConstructor
 @Entity
 public class Movie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "movie_id")
     private int id;
     private String name;
-    @Column(name = "year_of_production")
-    private int yearOfProduction;
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @ManyToMany(mappedBy = "movies", cascade = CascadeType.PERSIST)
+    private List<Actor> actors;
 
-    @ManyToOne
-    @JoinColumn(name = "director_id", referencedColumnName = "director_id")
-    private Director director;
+    public Movie(String name) {
+        this.name = name;
+    }
 }

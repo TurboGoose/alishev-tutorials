@@ -21,6 +21,8 @@ public class Main {
 //            changePrincipal(session);
             tryToAddSecondSchoolToPrincipal(session);
 
+
+
             session.getTransaction().commit();
         }
     }

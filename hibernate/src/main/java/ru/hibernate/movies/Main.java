@@ -10,82 +10,51 @@ import java.util.List;
 class Main {
     public static void main(String[] args) {
         Configuration config = new Configuration()
-                .addAnnotatedClass(Director.class)
+                .addAnnotatedClass(Actor.class)
                 .addAnnotatedClass(Movie.class);
 
         try (SessionFactory sessionFactory = config.buildSessionFactory()) {
             Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
 
-//            getDirectorAndAllHisMovies(session);
-//            getMovieAndItsDirector(session);
-//            addMovieForDirector(session);
-//            addNewDirectorWithMovie(session);
-//            changeDirectorForMovie(session);
-            deleteFilmFromDirector(session);
+//            createAndSaveActorsAndMovies(session);
+//            addMovieToActor(session);
+            unlinkActorFromMovie(session);
 
             session.getTransaction().commit();
         }
     }
 
-    private static void getDirectorAndAllHisMovies(Session session) {
-        Director director = session.get(Director.class, 1); // select
-        director.getMovies().forEach(System.out::println); // select
+    private static void unlinkActorFromMovie(Session session) {
+        Actor actor = session.get(Actor.class, 5); // select
+        Movie movieToRemove = actor.getMovies().get(0); // select
+
+        actor.getMovies().remove(movieToRemove);
+        movieToRemove.getActors().remove(actor); // select
+        // delete
     }
 
-    private static void getMovieAndItsDirector(Session session) {
-        Movie movie = session.get(Movie.class, 7); // select
-        System.out.println(movie);
-        System.out.println(movie.getDirector());
+    private static void createAndSaveActorsAndMovies(Session session) {
+        Movie movie = new Movie("Movie 1");
+        Actor actor1 = new Actor("Actor 1");
+        Actor actor2 = new Actor("Actor 2");
+
+        movie.setActors(new ArrayList<>(List.of(actor1, actor2)));
+        actor1.setMovies(new ArrayList<>(List.of(movie)));
+        actor2.setMovies(new ArrayList<>(List.of(movie)));
+
+        session.persist(actor1);
     }
 
-    private static void addMovieForDirector(Session session) {
-        Director director = session.get(Director.class, 3); // select
-        Movie newMovie = new Movie();
-        newMovie.setName("Brand new movie");
-        newMovie.setYearOfProduction(2023);
-        newMovie.setDirector(director);
+    private static void addMovieToActor(Session session) {
+        Actor actor = session.get(Actor.class, 4); // select
+        Movie newMovie = new Movie("Brand new movie");
 
-        session.persist(newMovie); // insert (in the end of transaction)
-        director.getMovies().add(newMovie);
-    }
+        actor.getMovies().add(newMovie); // select
+        newMovie.setActors(new ArrayList<>(List.of(actor)));
 
-    private static void addNewDirectorWithMovie(Session session) {
-        Director director = new Director();
-        director.setName("Some name");
-        director.setAge(45);
+        session.persist(newMovie); // insert
 
-        Movie movie = new Movie();
-        movie.setName("Some movie");
-        movie.setYearOfProduction(2023);
-        movie.setDirector(director);
-
-        director.setMovies(new ArrayList<>(List.of(movie)));
-
-        session.persist(director); // insert
-        session.persist(movie); // insert
-
-        System.out.println(director);
-        System.out.println(movie);
-    }
-
-    private static void changeDirectorForMovie(Session session) {
-        Movie movie = session.get(Movie.class, 14); // select
-        Director oldDirector = movie.getDirector();
-        Director newDirector = session.get(Director.class, 1); // select
-
-        movie.setDirector(newDirector); // update
-        oldDirector.getMovies().remove(movie); // select
-        newDirector.getMovies().add(movie); // why no select?
-
-        System.out.println(newDirector.getMovies()); // select
-    }
-
-    private static void deleteFilmFromDirector(Session session) {
-        Movie movie = session.get(Movie.class, 14); // select
-        Director director = movie.getDirector();
-
-        session.remove(movie); // delete
-        director.getMovies().remove(movie); // select
+        // delete + insert + insert
     }
 }
