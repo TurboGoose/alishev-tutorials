@@ -37,7 +37,8 @@ public class PeopleController {
     }
 
     @GetMapping("/new")
-    public String getCreateNewPersonForm(@ModelAttribute Person person) {
+    public String getCreateNewPersonForm(Model model) {
+        model.addAttribute("person", new Person());
         return "people/new";
     }
 
@@ -48,8 +49,8 @@ public class PeopleController {
         if (bindingResult.hasErrors()) {
             return "people/new";
         }
-        int generatedId = dao.save(person);
-        return "redirect:/people/" + generatedId;
+        dao.save(person);
+        return "redirect:/people/" + person.getId();
     }
 
     @GetMapping("/{id}/edit")
@@ -67,7 +68,8 @@ public class PeopleController {
         if (bindingResult.hasErrors()) {
             return "people/edit";
         }
-        dao.update(id, person);
+        person.setId(id);
+        dao.update(person);
         return "redirect:/people/" + id;
     }
 
