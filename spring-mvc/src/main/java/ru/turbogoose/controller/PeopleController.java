@@ -1,35 +1,35 @@
-package ru.turbogoose.controllers;
+package ru.turbogoose.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.turbogoose.dao.PersonDao;
-import ru.turbogoose.models.Person;
+import ru.turbogoose.model.Person;
+import ru.turbogoose.service.PeopleService;
 import ru.turbogoose.util.PersonValidator;
 
-import javax.validation.Valid;
 
 @Controller
 @RequestMapping("/people")
 public class PeopleController {
-    private final PersonDao dao;
+    private final PeopleService peopleService;
     private final PersonValidator personValidator;
 
-    public PeopleController(PersonDao dao, PersonValidator personValidator) {
-        this.dao = dao;
+    public PeopleController(PeopleService peopleService, PersonValidator personValidator) {
+        this.peopleService = peopleService;
         this.personValidator = personValidator;
     }
 
     @GetMapping
     public String getAllPeople(Model model) {
-        model.addAttribute("people", dao.getAllPeople());
+        model.addAttribute("people", peopleService.findAll());
         return "people/index";
     }
 
     @GetMapping("/{id}")
     public String getPersonById(@PathVariable int id, Model model) {
-        Person person = dao.getPersonById(id).orElseThrow(
+        Person person = peopleService.findById(id).orElseThrow(
                 () -> new IllegalArgumentException(String.format("Person with id %d not found", id))
         );
         model.addAttribute("person", person);
@@ -49,13 +49,13 @@ public class PeopleController {
         if (bindingResult.hasErrors()) {
             return "people/new";
         }
-        dao.save(person);
+        peopleService.save(person);
         return "redirect:/people/" + person.getId();
     }
 
     @GetMapping("/{id}/edit")
     public String getEditPersonForm(@PathVariable int id, Model model) {
-        Person person = dao.getPersonById(id).orElseThrow(
+        Person person = peopleService.findById(id).orElseThrow(
                 () -> new IllegalArgumentException(String.format("Person with id %d does no exist", id)));
         model.addAttribute("person", person);
         return "people/edit";
@@ -69,13 +69,13 @@ public class PeopleController {
             return "people/edit";
         }
         person.setId(id);
-        dao.update(person);
+        peopleService.update(person);
         return "redirect:/people/" + id;
     }
 
     @DeleteMapping("/{id}")
     public String deletePerson(@PathVariable int id) {
-        dao.delete(id);
+        peopleService.delete(id);
         return "redirect:/people";
     }
 }
