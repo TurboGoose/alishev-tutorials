@@ -1,11 +1,12 @@
 package ru.turbogoose.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+import java.util.List;
 
 
 @Data
@@ -21,4 +22,8 @@ public class Person {
     private String name;
     @Email(message = "Email must be valid")
     private String email;
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    @OneToMany(mappedBy = "owner")
+    private List<Item> items;
 }
