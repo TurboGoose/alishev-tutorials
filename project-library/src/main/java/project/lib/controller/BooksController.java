@@ -27,8 +27,11 @@ public class BooksController {
     }
 
     @GetMapping
-    public String getAllBooks(Model model) {
-        model.addAttribute("books", booksService.getAllBooks());
+    public String getAllBooks(Model model,
+                              @RequestParam(required = false) Integer page,
+                              @RequestParam(required = false) Integer size,
+                              @RequestParam(required = false) String sort) {
+        model.addAttribute("books", booksService.getAllBooks(page, size, sort));
         return "books/list";
     }
 
@@ -95,11 +98,7 @@ public class BooksController {
 
     @PatchMapping("/{id}")
     public String setBorrower(@PathVariable("id") int bookId, @RequestParam int borrowerId) {
-        if (borrowerId == -1) {
-            borrowService.turnBookIn(bookId);
-        } else {
-            borrowService.borrowBook(bookId, borrowerId);
-        }
+        borrowService.setBorrower(bookId, borrowerId);
         return "redirect:/books/{id}";
     }
 }

@@ -1,7 +1,6 @@
 package project.lib.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import project.lib.model.Person;
 import project.lib.repository.BooksRepository;
 
@@ -13,13 +12,19 @@ public class BorrowService {
         this.booksRepository = booksRepository;
     }
 
-    @Transactional
-    public void turnBookIn(int bookId) {
+    public void setBorrower(int bookId, int borrowerId) {
+        if (borrowerId == -1) {
+            turnBookIn(bookId);
+        } else {
+            borrowBook(bookId, borrowerId);
+        }
+    }
+
+    private void turnBookIn(int bookId) {
         booksRepository.updateBorrower(bookId, null);
     }
 
-    @Transactional
-    public void borrowBook(int bookId, int borrowerId) {
+    private void borrowBook(int bookId, int borrowerId) {
         Person borrower = new Person();
         borrower.setId(borrowerId);
         booksRepository.updateBorrower(bookId, borrower);
