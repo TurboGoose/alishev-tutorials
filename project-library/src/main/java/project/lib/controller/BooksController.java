@@ -5,9 +5,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import project.lib.dao.BookDao;
 import project.lib.model.Book;
 import project.lib.model.Person;
+import project.lib.service.BooksService;
+import project.lib.service.BorrowService;
 import project.lib.service.PeopleService;
 
 import java.util.Optional;
@@ -15,17 +16,19 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/books")
 public class BooksController {
-    private final BookDao bookDao;
+    private final BooksService booksService;
+    private final BorrowService borrowService;
     private final PeopleService peopleService;
 
-    public BooksController(BookDao bookDao, PeopleService peopleService) {
-        this.bookDao = bookDao;
+    public BooksController(BooksService booksService, BorrowService borrowService, PeopleService peopleService) {
+        this.booksService = booksService;
+        this.borrowService = borrowService;
         this.peopleService = peopleService;
     }
 
     @GetMapping
     public String getAllBooks(Model model) {
-        model.addAttribute("books", bookDao.getAllBooks());
+        model.addAttribute("books", booksService.getAllBooks());
         return "books/list";
     }
 
@@ -40,13 +43,13 @@ public class BooksController {
         if (bindingResult.hasErrors()) {
             return "books/create";
         }
-        int id = bookDao.save(book);
+        int id = booksService.saveBook(book);
         return "redirect:/books/" + id;
     }
 
     @GetMapping("/{id}")
     public String getBook(@PathVariable int id, Model model) {
-        Optional<Book> optionalBook = bookDao.getBookById(id);
+        Optional<Book> optionalBook = booksService.getBookById(id);
         if (optionalBook.isEmpty()) {
             return "redirect:/books";
         }
@@ -65,13 +68,13 @@ public class BooksController {
 
     @DeleteMapping("/{id}")
     public String deleteBook(@PathVariable int id) {
-        bookDao.delete(id);
+        booksService.deleteBookById(id);
         return "redirect:/books";
     }
 
     @GetMapping("/{id}/edit")
     public String getEditBookForm(@PathVariable int id, Model model) {
-        Optional<Book> optionalBook = bookDao.getBookById(id);
+        Optional<Book> optionalBook = booksService.getBookById(id);
         if (optionalBook.isEmpty()) {
             return "redirect:/books";
         }
@@ -85,16 +88,17 @@ public class BooksController {
         if (bindingResult.hasErrors()) {
             return "books/edit";
         }
-        bookDao.update(id, book);
+        book.setId(id);
+        booksService.updateBook(book);
         return "redirect:/books/" + id;
     }
 
     @PatchMapping("/{id}")
     public String setBorrower(@PathVariable("id") int bookId, @RequestParam int borrowerId) {
         if (borrowerId == -1) {
-            bookDao.turnIn(bookId);
+            borrowService.turnBookIn(bookId);
         } else {
-            bookDao.borrow(bookId, borrowerId);
+            borrowService.borrowBook(bookId, borrowerId);
         }
         return "redirect:/books/{id}";
     }

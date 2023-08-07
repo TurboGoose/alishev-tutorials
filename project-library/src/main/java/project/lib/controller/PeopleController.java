@@ -80,6 +80,7 @@ public class PeopleController {
         if (bindingResult.hasErrors()) {
             return "people/edit";
         }
+        person.setId(id);
         peopleService.updatePerson(person);
         return "redirect:/people/" + id;
     }
