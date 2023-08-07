@@ -6,9 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import project.lib.dao.BookDao;
-import project.lib.dao.PersonDao;
 import project.lib.model.Book;
 import project.lib.model.Person;
+import project.lib.service.PeopleService;
 
 import java.util.Optional;
 
@@ -16,11 +16,11 @@ import java.util.Optional;
 @RequestMapping("/books")
 public class BooksController {
     private final BookDao bookDao;
-    private final PersonDao personDao;
+    private final PeopleService peopleService;
 
-    public BooksController(BookDao bookDao, PersonDao personDao) {
+    public BooksController(BookDao bookDao, PeopleService peopleService) {
         this.bookDao = bookDao;
-        this.personDao = personDao;
+        this.peopleService = peopleService;
     }
 
     @GetMapping
@@ -50,14 +50,15 @@ public class BooksController {
         if (optionalBook.isEmpty()) {
             return "redirect:/books";
         }
-        model.addAttribute("book", optionalBook.get());
-        Optional<Person> optionalPerson = personDao.getBorrowerByBookId(id);
-        boolean isBookAvailable = optionalPerson.isEmpty();
+        Book book = optionalBook.get();
+        model.addAttribute("book", book);
+        Person borrower = book.getBorrower();
+        boolean isBookAvailable = borrower == null;
         model.addAttribute("isBookAvailable", isBookAvailable);
         if (isBookAvailable) {
-            model.addAttribute("people", personDao.getAllPeople());
+            model.addAttribute("people", peopleService.getAllPeopleWithoutBooks());
         } else {
-            model.addAttribute("person", optionalPerson.get());
+            model.addAttribute("person", borrower);
         }
         return "books/show";
     }

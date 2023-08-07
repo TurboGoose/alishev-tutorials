@@ -23,6 +23,10 @@ public class PeopleService {
         return peopleRepository.findByIdWithBooks(id);
     }
 
+    public Optional<Person> getPersonByFullName(String fullName) {
+        return peopleRepository.findByFullName(fullName);
+    }
+
     public Optional<Person> getPersonWithoutBooksById(int id) {
         return peopleRepository.findById(id);
     }

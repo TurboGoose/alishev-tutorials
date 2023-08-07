@@ -9,6 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface PeopleRepository extends JpaRepository<Person, Integer> {
+    Optional<Person> findByFullName(String fullName);
+
     @Query("FROM Person p JOIN FETCH p.books WHERE p.id = (:id)")
     Optional<Person> findByIdWithBooks(int id);
 }
