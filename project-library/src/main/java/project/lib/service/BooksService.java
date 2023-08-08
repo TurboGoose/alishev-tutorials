@@ -59,12 +59,10 @@ public class BooksService {
 
     public void updateBook(Book book) {
         Optional<Book> optionalBook = booksRepository.findById(book.getId());
-        if (optionalBook.isEmpty()) {
-            return;
-        }
-        Book persistedBook = optionalBook.get();
-        book.setBorrower(persistedBook.getBorrower());
-        book.setBorrowedAt(persistedBook.getBorrowedAt());
+        optionalBook.ifPresent(b -> {
+            book.setBorrower(b.getBorrower());
+            book.setBorrowedAt(b.getBorrowedAt());
+        });
         booksRepository.save(book);
     }
 
