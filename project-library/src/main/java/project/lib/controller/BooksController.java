@@ -11,6 +11,7 @@ import project.lib.service.BooksService;
 import project.lib.service.BorrowService;
 import project.lib.service.PeopleService;
 
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -100,5 +101,14 @@ public class BooksController {
     public String setBorrower(@PathVariable("id") int bookId, @RequestParam int borrowerId) {
         borrowService.setBorrower(bookId, borrowerId);
         return "redirect:/books/{id}";
+    }
+
+    @GetMapping("/search")
+    public String searchBook(Model model, @RequestParam(required = false) String prefix) {
+        if (prefix != null) {
+            List<Book> matchedBooks = booksService.getBooksByTitle(prefix);
+            model.addAttribute("books", matchedBooks);
+        }
+        return "books/search";
     }
 }

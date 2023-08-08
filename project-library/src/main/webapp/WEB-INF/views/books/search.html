@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search book</title>
+</head>
+<body>
+<form th:method="GET" th:action="@{/books/search}">
+    <label for="prefix">Type in book title prefix:</label>
+    <input type="text" id="prefix" name="prefix">
+    <input type="submit" value="search">
+</form>
+
+<div th:if="${books}">
+    <p th:if="${books.isEmpty()}">No books found</p>
+    <ul th:unless="${books.isEmpty()}">
+        <li th:each="book : ${books}" th:with="borrower=${book.getBorrower()}">
+            <p th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getYearOfPublication()}"></p>
+            <p th:if="${borrower}" th:text="${'Current borrower is: ' + borrower.getFullName() + ', ' + borrower.getYearOfBirth()}"></p>
+            <p th:unless="${borrower}">This book is free</p>
+        </li>
+    </ul>
+</div>
+
+<hr>
+<a th:href="@{/books}">Back to books list</a>
+</body>
+</html>
