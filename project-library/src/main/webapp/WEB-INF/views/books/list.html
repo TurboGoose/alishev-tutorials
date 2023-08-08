@@ -8,7 +8,7 @@
 <h2>Book list:</h2>
 
 <p th:if="${books.isEmpty()}">No books added yet</p>
-<ul th:if="${!books.isEmpty()}">
+<ul th:unless="${books.isEmpty()}">
   <li th:each="book : ${books}">
     <a th:href="@{/books/{id}(id=${book.getId()})}" th:text="${book.getTitle()} +
          ', ' + ${book.getAuthor()} + ', ' +  ${book.getYearOfPublication()}"></a>

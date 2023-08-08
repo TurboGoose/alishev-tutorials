@@ -16,7 +16,9 @@
 <div th:unless="${person.getBooks().isEmpty()}">
     <p><b>Borrowed books:</b></p>
     <ul>
-       <li th:each="book : ${person.getBooks()}"  th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getYearOfPublication()}"></li>
+       <li th:style="${book.isExpired()} ? 'color: red' : ''"
+           th:each="book : ${person.getBooks()}"
+           th:text="${book.getTitle() + ', ' + book.getAuthor() + ', ' + book.getYearOfPublication()}"></li>
     </ul>
 </div>
 

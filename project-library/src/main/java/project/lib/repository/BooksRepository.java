@@ -9,14 +9,17 @@ import org.springframework.transaction.annotation.Transactional;
 import project.lib.model.Book;
 import project.lib.model.Person;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface BooksRepository extends JpaRepository<Book, Integer> {
     @Modifying
     @Transactional
-    @Query("UPDATE Book SET borrower=:borrower WHERE id=:id")
-    void updateBorrower(@Param("id") int bookId, @Param("borrower") Person borrower);
+    @Query("UPDATE Book SET borrowedAt=:borrowedAt, borrower=:borrower WHERE id=:id")
+    void updateBorrower(@Param("id") int bookId,
+                        @Param("borrower") Person borrower,
+                        @Param("borrowedAt")LocalDateTime borrowedAt);
 
     List<Book> findByTitleStartingWithIgnoreCase(String prefix);
 }
