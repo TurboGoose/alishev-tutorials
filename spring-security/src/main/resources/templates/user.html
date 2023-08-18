@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p th:text="${user}"></p>
+<br>
+<form method="POST" th:action="@{/logout}">
+    <input type="submit" value="Logout">
+</form>
+<br>
+<a th:href="@{/admin}">Admin page</a>
+</body>
+</html>
