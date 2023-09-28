@@ -4,3 +4,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/rest-api
     username: ilya
     password: bebra
+  jpa:
+    hibernate:
+      ddl-auto: validate

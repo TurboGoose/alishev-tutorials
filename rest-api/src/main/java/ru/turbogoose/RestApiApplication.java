@@ -1,4 +1,4 @@
-package ru.turbogoose.restapi;
+package ru.turbogoose;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
