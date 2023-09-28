@@ -1,6 +1,7 @@
 package ru.turbogoose.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.turbogoose.exceptions.PersonNotFoundException;
 import ru.turbogoose.repository.PeopleRepository;
 import ru.turbogoose.model.Person;
@@ -23,5 +24,10 @@ public class PeopleService {
         return peopleRepository.findById(id).orElseThrow(
                 () -> new PersonNotFoundException(String.format("Person with id %d was not found", id))
         );
+    }
+
+    @Transactional
+    public Person save(Person person) {
+        return peopleRepository.save(person);
     }
 }
