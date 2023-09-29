@@ -6,6 +6,7 @@ import ru.turbogoose.exceptions.PersonNotFoundException;
 import ru.turbogoose.repository.PeopleRepository;
 import ru.turbogoose.model.Person;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -28,6 +29,11 @@ public class PeopleService {
 
     @Transactional
     public Person save(Person person) {
+        enrichPerson(person);
         return peopleRepository.save(person);
+    }
+
+    private void enrichPerson(Person person) {
+        person.setCreatedAt(LocalDateTime.now());
     }
 }
