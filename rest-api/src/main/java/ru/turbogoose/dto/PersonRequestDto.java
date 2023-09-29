@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class PersonDto {
+public class PersonRequestDto {
     @Min(value = 0, message = "Age must be positive")
     private int age;
     @NotEmpty(message = "Name must not be empty")

@@ -6,7 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
-import ru.turbogoose.dto.PersonDto;
+import ru.turbogoose.dto.PersonRequestDto;
+import ru.turbogoose.dto.PersonResponseDto;
 import ru.turbogoose.exceptions.PersonNotFoundException;
 import ru.turbogoose.mappers.PersonMapper;
 import ru.turbogoose.model.Person;
@@ -25,14 +26,14 @@ public class PeopleController {
     private final PersonMapper personMapper;
 
     @GetMapping
-    public List<PersonDto> getPeople() {
+    public List<PersonResponseDto> getPeople() {
         return peopleService.findAll().stream()
                 .map(personMapper::toDto)
                 .toList();
     }
 
     @GetMapping("/{id}")
-    public PersonDto getPersonById(@PathVariable int id) {
+    public PersonResponseDto getPersonById(@PathVariable int id) {
         return personMapper.toDto(peopleService.findById(id));
     }
 
@@ -43,8 +44,8 @@ public class PeopleController {
     }
 
     @PostMapping
-    public PersonDto createPerson(@RequestBody @Valid PersonDto personDto) {
-        Person person = personMapper.toModel(personDto);
+    public PersonResponseDto createPerson(@RequestBody @Valid PersonRequestDto personRequestDto) {
+        Person person = personMapper.toModel(personRequestDto);
         return personMapper.toDto(peopleService.save(person));
     }
 
