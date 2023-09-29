@@ -4,17 +4,18 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import ru.turbogoose.dto.ErrorDto;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.turbogoose.dto.SensorDto;
-import ru.turbogoose.exceptions.SensorAlreadyExistsException;
 import ru.turbogoose.mappers.SensorMapper;
 import ru.turbogoose.services.SensorService;
 
 @RestController
 @RequestMapping("/sensors")
 @RequiredArgsConstructor
-public class SensorsController {
+public class SensorController {
     private final SensorMapper sensorMapper;
     private final SensorService sensorService;
 
@@ -22,11 +23,5 @@ public class SensorsController {
     public ResponseEntity<HttpStatus> registerSensor(@RequestBody @Valid SensorDto sensorDto) {
         sensorService.registerSensor(sensorMapper.toModel(sensorDto));
         return ResponseEntity.ok().build();
-    }
-
-    @ExceptionHandler(SensorAlreadyExistsException.class)
-    private ResponseEntity<ErrorDto> handleDuplicateSensorException(SensorAlreadyExistsException exc) {
-        ErrorDto error = new ErrorDto(exc.getMessage());
-        return ResponseEntity.badRequest().body(error);
     }
 }

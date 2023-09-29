@@ -19,7 +19,7 @@ public class SensorService {
             sensorRepository.save(sensor);
         } catch (DataIntegrityViolationException exc) {
             throw new SensorAlreadyExistsException(
-                    String.format("Sensor with name '%s' already exists", sensor.getName()), exc);
+                    String.format("Sensor with name '%s' already exists", sensor.getName()));
         }
     }
 }
