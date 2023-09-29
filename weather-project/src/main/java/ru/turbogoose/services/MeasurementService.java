@@ -10,12 +10,17 @@ import ru.turbogoose.repositories.MeasurementRepository;
 import ru.turbogoose.repositories.SensorRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class MeasurementService {
     private final MeasurementRepository measurementRepository;
     private final SensorRepository sensorRepository;
+
+    public List<Measurement> getAllMeasurements() {
+        return measurementRepository.findAll();
+    }
 
     @Transactional
     public void registerMeasurement(Measurement measurement) {
