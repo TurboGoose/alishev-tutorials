@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>ru.turbogoose</groupId>
-	<artifactId>weather-project</artifactId>
+	<artifactId>weather-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>weather-project</name>
 
