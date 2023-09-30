@@ -8,16 +8,10 @@ import ru.turbogoose.exceptions.SensorAlreadyExistsException;
 import ru.turbogoose.models.Sensor;
 import ru.turbogoose.repositories.SensorRepository;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class SensorService {
     private final SensorRepository sensorRepository;
-
-    public List<Sensor> getAllSensors() {
-        return sensorRepository.findAll();
-    }
 
     @Transactional
     public void registerSensor(Sensor sensor) {
