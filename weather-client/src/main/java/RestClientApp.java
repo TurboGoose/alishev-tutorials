@@ -1,11 +1,9 @@
-import factories.MeasurementFactory;
-import factories.SensorPool;
+import utils.MeasurementFactory;
+import utils.SensorPool;
 import models.Measurement;
+import models.MeasurementsResponse;
 import models.Sensor;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class RestClientApp {
     private static final RestTemplate restTemplate = new RestTemplate();
@@ -20,7 +18,7 @@ public class RestClientApp {
         System.out.println("Rainy days count: " + getRainyDaysCount());
 
         System.out.println("Measurements:");
-        getAllMeasurements().forEach(System.out::println);
+        getAllMeasurements().getMeasurements().forEach(System.out::println);
     }
 
 
@@ -46,8 +44,8 @@ public class RestClientApp {
         return restTemplate.getForObject(url, Integer.class);
     }
 
-    private static List<Measurement> getAllMeasurements() {
+    private static MeasurementsResponse getAllMeasurements() {
         String url = "http://localhost:8080/measurements";
-        return Arrays.stream(restTemplate.getForObject(url, Measurement[].class)).toList();
+        return restTemplate.getForObject(url, MeasurementsResponse.class);
     }
 }

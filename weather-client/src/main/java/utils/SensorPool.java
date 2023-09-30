@@ -1,4 +1,4 @@
-package factories;
+package utils;
 
 import models.Sensor;
 
