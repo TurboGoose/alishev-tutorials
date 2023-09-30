@@ -1,47 +1,48 @@
 package ru.turbogoose.security;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import ru.turbogoose.services.PersonDetailsService;
 
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-    private final PersonDetailsService personDetailsService;
-
-    public SecurityConfig(PersonDetailsService personDetailsService) {
-        this.personDetailsService = personDetailsService;
-    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-            .antMatchers("/registration", "/login", "/error").permitAll()
-//            .antMatchers("/admin").hasRole("ADMIN")
-            .anyRequest().hasAnyRole("USER", "ADMIN")
-            .and()
-            .formLogin().loginPage("/login")
-            .defaultSuccessUrl("/user", true)
-            .failureUrl("/login?error")
-            .loginProcessingUrl("/process")
-            .and()
-            .logout().logoutUrl("/logout")
-            .logoutSuccessUrl("/login");
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(personDetailsService).passwordEncoder(passwordEncoder());
-    }
-
+@Configuration
+public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AuthenticationManager authManager(PersonDetailsService personDetailsService,
+                                             PasswordEncoder passwordEncoder) {
+        DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
+        daoProvider.setUserDetailsService(personDetailsService);
+        daoProvider.setPasswordEncoder(passwordEncoder);
+        return new ProviderManager(daoProvider);
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+        return httpSecurity
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/registration", "/login", "/error").permitAll()
+                        .anyRequest().hasAnyRole("USER", "ADMIN"))
+                .formLogin(login -> login
+                        .loginPage("/login")
+                        .loginProcessingUrl("/process")
+                        .defaultSuccessUrl("/user", true)
+                        .failureUrl("/login?error"))
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login"))
+                .build();
     }
 }
