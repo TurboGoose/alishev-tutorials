@@ -3,7 +3,7 @@ package ru.turbogoose.jwt.util;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import ru.turbogoose.jwt.models.Person;
+import ru.turbogoose.jwt.dto.PersonDto;
 import ru.turbogoose.jwt.services.PeopleService;
 
 @Component
@@ -16,12 +16,12 @@ public class PersonValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return Person.class.equals(aClass);
+        return PersonDto.class.equals(aClass);
     }
 
     @Override
     public void validate(Object o, Errors errors) {
-        Person personToValidate = (Person) o;
+        PersonDto personToValidate = (PersonDto) o;
         peopleService.getPersonByName(personToValidate.getName()).ifPresent(
                 person -> errors.rejectValue("name", "", "User with such name already present")
         );

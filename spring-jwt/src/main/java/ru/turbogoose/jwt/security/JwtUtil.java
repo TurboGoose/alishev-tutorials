@@ -16,7 +16,7 @@ public class JwtUtil {
     private String SECRET;
 
     public String generateToken(String username) {
-        LocalDateTime tokenExpiration = LocalDateTime.now().plusMinutes(60);
+        LocalDateTime tokenExpiration = LocalDateTime.now().plusHours(1);
         return JWT.create()
                 .withSubject("User details")
                 .withIssuer("turbogoose")
@@ -28,6 +28,7 @@ public class JwtUtil {
 
     public String validateTokenAndRetrieveUsername(String token) {
         JWTVerifier verifier = JWT.require(Algorithm.HMAC256(SECRET))
+                .ignoreIssuedAt()
                 .withSubject("User details")
                 .withIssuer("turbogoose")
                 .build();
