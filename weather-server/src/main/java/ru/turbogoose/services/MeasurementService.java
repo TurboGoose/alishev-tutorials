@@ -38,7 +38,6 @@ public class MeasurementService {
     }
 
     public Integer getRainyDaysCount() {
-        Integer count = measurementRepository.countRainingDays();
-        return count == null ? 0 : count;
+        return measurementRepository.countByRainingIsTrue();
     }
 }
