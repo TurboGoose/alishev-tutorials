@@ -1,9 +1,9 @@
-package ru.turbogoose.security;
+package ru.turbogoose.jwt.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.turbogoose.models.Person;
+import ru.turbogoose.jwt.models.Person;
 
 import java.util.Collection;
 import java.util.List;

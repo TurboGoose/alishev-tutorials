@@ -1,4 +1,4 @@
-package ru.turbogoose;
+package ru.turbogoose.jwt;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;

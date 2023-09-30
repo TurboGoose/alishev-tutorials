@@ -1,8 +1,8 @@
-package ru.turbogoose.services;
+package ru.turbogoose.jwt.services;
 
 import org.springframework.stereotype.Service;
-import ru.turbogoose.models.Person;
-import ru.turbogoose.repositories.PeopleRepository;
+import ru.turbogoose.jwt.models.Person;
+import ru.turbogoose.jwt.repositories.PeopleRepository;
 
 import java.util.Optional;
 

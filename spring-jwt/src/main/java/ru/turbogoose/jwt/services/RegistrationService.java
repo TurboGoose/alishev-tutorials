@@ -1,10 +1,10 @@
-package ru.turbogoose.services;
+package ru.turbogoose.jwt.services;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.turbogoose.models.Person;
-import ru.turbogoose.repositories.PeopleRepository;
+import ru.turbogoose.jwt.models.Person;
+import ru.turbogoose.jwt.repositories.PeopleRepository;
 
 @Service
 public class RegistrationService {

@@ -1,4 +1,4 @@
-package ru.turbogoose.services;
+package ru.turbogoose.jwt.services;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;

@@ -1,11 +1,11 @@
-package ru.turbogoose.services;
+package ru.turbogoose.jwt.services;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.turbogoose.repositories.PeopleRepository;
-import ru.turbogoose.security.PersonDetails;
+import ru.turbogoose.jwt.repositories.PeopleRepository;
+import ru.turbogoose.jwt.security.PersonDetails;
 
 @Service
 public class PersonDetailsService implements UserDetailsService {

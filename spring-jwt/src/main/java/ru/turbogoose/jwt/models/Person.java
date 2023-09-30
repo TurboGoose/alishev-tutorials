@@ -1,4 +1,4 @@
-package ru.turbogoose.models;
+package ru.turbogoose.jwt.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;

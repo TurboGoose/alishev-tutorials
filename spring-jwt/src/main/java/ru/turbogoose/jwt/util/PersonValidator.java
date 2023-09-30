@@ -1,10 +1,10 @@
-package ru.turbogoose.util;
+package ru.turbogoose.jwt.util;
 
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import ru.turbogoose.models.Person;
-import ru.turbogoose.services.PeopleService;
+import ru.turbogoose.jwt.models.Person;
+import ru.turbogoose.jwt.services.PeopleService;
 
 @Component
 public class PersonValidator implements Validator {

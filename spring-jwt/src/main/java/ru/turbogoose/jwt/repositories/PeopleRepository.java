@@ -1,7 +1,7 @@
-package ru.turbogoose.repositories;
+package ru.turbogoose.jwt.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.turbogoose.models.Person;
+import ru.turbogoose.jwt.models.Person;
 
 import java.util.Optional;
 
