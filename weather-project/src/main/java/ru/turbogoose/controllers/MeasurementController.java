@@ -29,4 +29,9 @@ public class MeasurementController {
                 .map(measurementMapper::toDto)
                 .toList();
     }
+
+    @GetMapping("/rainyDaysCount")
+    public Integer getRainyDaysCount() {
+        return measurementService.getRainyDaysCount();
+    }
 }

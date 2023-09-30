@@ -36,4 +36,9 @@ public class MeasurementService {
     private void enrichMeasurement(Measurement measurement) {
         measurement.setCreatedAt(LocalDateTime.now());
     }
+
+    public Integer getRainyDaysCount() {
+        Integer count = measurementRepository.countRainingDays();
+        return count == null ? 0 : count;
+    }
 }
