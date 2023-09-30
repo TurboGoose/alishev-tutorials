@@ -4,3 +4,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/spring-jwt
     username: ilya
     password: bebra
+
+jwt:
+  secret: replace to env
