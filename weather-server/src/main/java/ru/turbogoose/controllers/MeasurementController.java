@@ -5,10 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.turbogoose.dto.MeasurementDto;
+import ru.turbogoose.dto.MeasurementsDto;
 import ru.turbogoose.mappers.MeasurementMapper;
 import ru.turbogoose.services.MeasurementService;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/measurements")
@@ -24,10 +23,10 @@ public class MeasurementController {
     }
 
     @GetMapping
-    public List<MeasurementDto> getAllMeasurements() {
-        return measurementService.getAllMeasurements().stream()
+    public MeasurementsDto getAllMeasurements() {
+        return new MeasurementsDto(measurementService.getAllMeasurements().stream()
                 .map(measurementMapper::toDto)
-                .toList();
+                .toList());
     }
 
     @GetMapping("/rainyDaysCount")
