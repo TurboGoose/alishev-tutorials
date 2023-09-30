@@ -1,5 +1,6 @@
 package ru.turbogoose.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,8 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import ru.turbogoose.models.Person;
 import ru.turbogoose.services.RegistrationService;
 import ru.turbogoose.util.PersonValidator;
-
-import javax.validation.Valid;
 
 @Controller
 public class AuthController {
